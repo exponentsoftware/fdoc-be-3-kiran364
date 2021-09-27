@@ -15,7 +15,7 @@ var User = mongoose.model('User', schema);
 
 exports.registarUser = async (req, res) => {
 
-    const {Username, email, password, phone, role} = req.body;
+    const {Username, email, password, phone, userRole} = req.body;
     try {
         // if user already exist
         var user = await User.findOne({email});
@@ -28,7 +28,7 @@ exports.registarUser = async (req, res) => {
             email,
             password,
             phone,
-            role
+            userRole
         })
         // password converting into hashed format
         const salt = await bcrypt.genSalt(10);

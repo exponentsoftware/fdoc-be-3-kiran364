@@ -1,16 +1,18 @@
 
 const Todo = require('../Models/todoModel');
+const jwt = require("jsonwebtoken");
 
 
 // Create todo controller
 exports.create_todo = async (req, res) => {
     try {
-        const {username, todotitle, status, category} = req.body;
+        const {todotitle, status, category} = req.body;
         const newtodo = new Todo({
-            username,
             todotitle,
             status, 
             category,
+            user: req.user.id,
+            role: req.user.userRole,
         });
         const savetodo = await newtodo.save();
         res.status(200).json(savetodo)
@@ -23,10 +25,16 @@ exports.create_todo = async (req, res) => {
 
 // Get todo controller
 exports.get_todo = async (req, res) => {
-    throw new Error("Nodemon")
     try {
-        const data = await Todo.findById(req.params.id);
-        res.status(201).json(data);
+        const token = req.header('x-auth-token');
+        const decodetoken = jwt.verify(token, process.env.SecretKey);
+        if(decodetoken.user.userRole == "Admin"){
+           const todos = await Todo.find();
+           res.status(201).json(todos);
+        } else {
+            const userTodos = await Todo.find({user: decodetoken.user.id});
+            res.status(201).json(userTodos);
+        }
     } catch (err) {
         res.status(404).json(err);
     }

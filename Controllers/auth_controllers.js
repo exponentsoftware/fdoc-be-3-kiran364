@@ -23,7 +23,7 @@ exports.getUser = async (req, res) => {
 }
 
 exports.loggedUser = async (req, res) => {
-    
+
     const {email, password} = req.body;
     try {
         let user = await User.findOne({email});
@@ -39,7 +39,8 @@ exports.loggedUser = async (req, res) => {
 
         const payload = {
             user: {
-                id: user.id
+                id: user.id,
+                userRole: user.userRole
             }
         }
         jwt.sign(payload, process.env.SecretKey, {

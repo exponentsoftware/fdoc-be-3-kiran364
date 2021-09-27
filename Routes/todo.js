@@ -1,11 +1,12 @@
 const router = require('express').Router();
 const TodoController = require('../Controllers/todo_controllers')
+const auth = require("../middleware/auth");
 
 //Create Todo 
-router.post('/',TodoController.create_todo);
+router.post('/', auth, TodoController.create_todo);
 
 //Get Todo by Id
-router.get("/:id", TodoController.get_todo);
+router.get("/", auth, TodoController.get_todo);
 
 //Update Todo by Id
 router.patch('/:id', TodoController.update_todo);
